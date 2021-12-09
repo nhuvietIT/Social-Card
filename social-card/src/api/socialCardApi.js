@@ -15,6 +15,9 @@ const SocialCardsApi = {
         const url = "/socialcards/delete/" + id;
         return AxiosClient.delete(url)
     },
+    update: (data) => {
+        return AxiosClient.post("/socialcards/update", data)
+    },
 }
 
 export default SocialCardsApi;

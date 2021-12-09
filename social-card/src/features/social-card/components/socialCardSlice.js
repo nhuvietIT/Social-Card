@@ -21,7 +21,6 @@ export const addSocalDetail = createAsyncThunk(
   'social/addSocalDetail',
   async (value) => {
     const infor = await SocialCardsApi.uploadFile(value.Upload)
-    console.log(infor)
     const data = {
       Name: value.Name,
       Description: value.Description,
@@ -40,6 +39,25 @@ export const deleteocalDetail = createAsyncThunk(
   'social/deleteocalDetail',
   async (id) => {
     const dataApi = await SocialCardsApi.delete(id);
+    const response = await new Promise((resolve) =>
+      setTimeout(() => resolve({ data: dataApi }), 500)
+    );
+    return response.data;
+  }
+);
+
+export const updateSocalDetail = createAsyncThunk(
+  'social/updateSocalDetail',
+  async (value) => {
+    const infor = await SocialCardsApi.uploadFile(value.Upload)
+    const data = {
+      id: value.id,
+      Name: value.Name,
+      Description: value.Description,
+      Avatar: infor.file.filename,
+      Image: infor.file.path
+    }
+    const dataApi = await SocialCardsApi.update(data);
     const response = await new Promise((resolve) =>
       setTimeout(() => resolve({ data: dataApi }), 500)
     );
@@ -72,6 +90,13 @@ export const socialSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(deleteocalDetail.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.social = action.payload;
+      })
+      .addCase(updateSocalDetail.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateSocalDetail.fulfilled, (state, action) => {
         state.status = 'idle';
         state.social = action.payload;
       })

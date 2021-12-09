@@ -49,9 +49,13 @@ export class SocialCardController {
     }
 
     @Delete('delete/:id')
-    async delete(@Param('id', ParseIntPipe) id: number) {
-        console.log(id)
+    async delete(@Param('id', ParseIntPipe) id: number) { 
         return await this.socialCardService.delete(id);
+    }
+
+    @Post('update')
+    async update(@Body() socialCard: SocialCard) {
+        return await this.socialCardService.update(socialCard);
     }
 
 }

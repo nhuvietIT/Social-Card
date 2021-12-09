@@ -40,5 +40,17 @@ export class SocialCardService {
         return await this.socialCardService.find()
     }
 
+    async update(socialCard: SocialCard) {
+        await this.socialCardService.update(socialCard.id,
+            {
+                id: socialCard.id,
+                Name: socialCard.Name,
+                Description: socialCard.Description,
+                Avatar: socialCard.Avatar,
+                Image: socialCard.Image
+            });
+        return await this.socialCardService.find()
+    }
+
 
 }
