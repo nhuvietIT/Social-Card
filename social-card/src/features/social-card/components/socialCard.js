@@ -63,7 +63,11 @@ export function SocialCard() {
 
    let searchByFirstName = str => socialdData.social.filter(({ Name }) => Name.includes(str))
    const arrData = Search === "" ? socialdData.social : searchByFirstName(Search)
-  
+   const dataList = arrData.map(({ id, Name, Avatar, Description, Image }) =>
+      ({ id: id, Name: Name, Avatar: Avatar, Description: Description, Image: Image }))
+   dataList.sort((a, b) => { return b.id - a.id });
+   console.log(dataList)
+
    return (
       <div>
          {socialdData.status === 'loading' ?
@@ -86,7 +90,7 @@ export function SocialCard() {
                   />
                </InputGroup>
                <>
-                  {arrData.map((list) => (
+                  {dataList.map((list) => (
                      <div key={list.id}>
                         <Card style={{ width: '25rem', margin: 6 }} border="dark" >
                            <div>
