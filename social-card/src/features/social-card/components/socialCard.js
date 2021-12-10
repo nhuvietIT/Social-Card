@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchSocalDetail, selectSocial, addSocalDetail, deleteocalDetail, updateSocalDetail } from "./socialCardSlice";
+import {
+   fetchSocalDetail, selectSocial, addSocalDetail, deleteocalDetail, updateSocalDetail, 
+} from "./socialCardSlice";
+import { selectCommnet } from "../components/comment/commentSlice"
 
-import { Modal, Button, InputGroup, FormControl, Image } from "react-bootstrap";
+import { Modal, Button, InputGroup, FormControl } from "react-bootstrap";
 import Card from 'react-bootstrap/Card'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Icon from "react-multiple-icons";
+import { Comment } from './comment/comment'
+import { Heart } from './heart';
 
 export function SocialCard() {
    const socialdData = useSelector(selectSocial);
+   const commentldData = useSelector(selectCommnet);
    const dispatch = useDispatch();
    const [show, setShow] = useState(false);
    const handleClose = () => setShow(false);
@@ -23,6 +29,8 @@ export function SocialCard() {
    const [idUpdate, setIdUpdate] = useState(Number);
    const [checkshow, setCheckshow] = useState(false);
    const [Search, setSearch] = useState("");
+   const [idSocial, setIdSocial] = useState(Number);
+   const [open, setOpen] = useState(false)
 
    useEffect(() => {
       const fetchList = async () => {
@@ -63,9 +71,11 @@ export function SocialCard() {
 
    let searchByFirstName = str => socialdData.social.filter(({ Name }) => Name.includes(str))
    const arrData = Search === "" ? socialdData.social : searchByFirstName(Search)
-   const dataList = arrData.map(({ id, Name, Avatar, Description, Image }) =>
-      ({ id: id, Name: Name, Avatar: Avatar, Description: Description, Image: Image }))
+   const dataList = arrData.map(({ id, Name, Avatar, Description, Image, Heart, IsEnable }) =>
+      ({ id: id, Name: Name, Avatar: Avatar, Description: Description, Image: Image, Heart: Heart, IsEnable: IsEnable }))
    dataList.sort((a, b) => { return b.id - a.id });
+
+   const dataListcomment = commentldData.social.map(({ id, Content, socialCardId }) => ({ id: id, Content: Content, socialCardId: socialCardId }))
 
    return (
       <div>
@@ -89,17 +99,18 @@ export function SocialCard() {
                   />
                </InputGroup>
                <>
-                  {dataList.map((list) => (
-                     <div key={list.id}>
+                  {dataList.map((list, i) => (
+                     <div key={i}>
                         <Card style={{ width: '25rem', margin: 6 }} border="dark" >
                            <div>
                               <Card.Img variant="top" src={"./uploads/avatar/" + list.Avatar} height={"352rem"} />
                               <button className="btn btn-sl float-right" onClick={() => {
                                  setCheckshow(true)
-                                 setIdUpdate(list.id)
                                  handleShow()
+                                 setIdUpdate(list.id)
                                  setName(list.Name)
                                  setDescription(list.Description)
+
                               }}
                               ><Icon iconName="fas fa-pencil-alt" /></button>
                            </div>
@@ -107,18 +118,44 @@ export function SocialCard() {
                               <Card.Title>{list.Name}</Card.Title>
                               <Card.Text>{list.Description}</Card.Text>
                               <div style={{ marginTop: 20 }} >
-                                 <button className="btn btn-outline-danger btn-sm float-right"
+                                 <button className="btn btn-outline-danger btn-sm float-right" style={{ border: "none" }}
                                     onClick={() => {
                                        if (window.confirm("Data can't revert! Do you want to continue?")) {
                                           dispatch(deleteocalDetail(list.id))
                                        }
                                     }}
                                  ><Icon iconName="fas fa-trash" /></button>
-                                 <button className="btn btn-outline-danger btn-sm float-left"><Icon iconName="fas fa-heart" /></button>
-                                 <button className="btn btn-outline-primary btn-sm float-left" style={{ marginLeft: 9 }}
-                                 ><Icon iconName="fas fa-comment-alt" /></button>
+                                 {/* <button
+                                    style={{ border: "none" }}
+                                    className="btn btn-outline-danger btn-sm float-left"
+                                    onClick={() => {
+                                       const data = { id: list.id, Heart: list.Heart + 1 }
+                                       dispatch(updateStatus(data))
+
+                                    }}
+
+                                 ><Icon iconName="fas fa-heart" /></button>
+                                 <span className="btn-sm float-left" style={{ color: "red", fontWeight: "bold" }} >{list.Heart}</span> */}
+
+                                 <Heart list={list} />
+
+                                 <button className="btn btn-outline-primary btn-sm float-left"
+                                    style={{ border: "none", marginLeft: 9 }}
+                                    onClick={() => {
+                                       setOpen(!open)
+                                       setIdSocial(list.id)
+                                    }}
+                                    aria-controls="example-collapse-text"
+                                    aria-expanded={open}
+                                 > <Icon iconName="fas fa-comment-alt" /> </button>
+                                 <span className="btn-sm float-left"
+                                    style={{ color: "#0040FF", fontWeight: "bold" }}>{dataListcomment.filter(f => f.socialCardId === list.id).length}</span>
+
                               </div>
                            </Card.Body>
+
+                           <Comment open={list.id === idSocial ? open : false} idopen={"example-collapse-text"} idSocial={idSocial} />
+
                         </Card>
                      </div>
                   ))}
@@ -186,27 +223,5 @@ export function SocialCard() {
 
          }
       </div>
-      // <>
-      //    <input
-      //       type="text"
-      //       name="name"
-      //       onChange={(e) => { setName(e.target.value) }}
-      //       placeholder="name..."
-      //       autoComplete="off"
-      //    />
-      //    <input
-      //       type="text"
-      //       name="surname"
-      //       onChange={(e) => { setDescription(e.target.value) }}
-      //       placeholder="description"
-      //       autoComplete="off"
-      //    />
-      //    <button onClick={(e) => { dispatch(showDataSocialCard(data)) }}>Add</button>
-      //    <span >{count}</span>
-      //    <hr />
-      // </>
-
    )
 }
-
-// export default SocialCard

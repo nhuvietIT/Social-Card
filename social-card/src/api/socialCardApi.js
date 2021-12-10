@@ -18,6 +18,15 @@ const SocialCardsApi = {
     update: (data) => {
         return AxiosClient.post("/socialcards/update", data)
     },
+    saveComment: (data) => {
+        return AxiosClient.post('/socialcards/save_comment', data);
+    },
+    showComment: () => {
+        return AxiosClient.get('/socialcards/showcomment');
+    },
+    updateStatus: (id, value) => {
+        return AxiosClient.get('/socialcards/update-status/' + id + '/' + value)
+    },
 }
 
 export default SocialCardsApi;

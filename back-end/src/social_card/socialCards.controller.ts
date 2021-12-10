@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UploadedFile, UseInterceptors, ParseBoolPipe } from '@nestjs/common';
 import { SocialCardService } from './socialCards.service';
+import { Comment } from 'src/database/entity/comment.entity';
 import { SocialCard } from '../database/entity/socialCard.entity';
 import { FileInterceptor } from '@nestjs/platform-express'
 import { Express } from 'express';
@@ -49,7 +50,7 @@ export class SocialCardController {
     }
 
     @Delete('delete/:id')
-    async delete(@Param('id', ParseIntPipe) id: number) { 
+    async delete(@Param('id', ParseIntPipe) id: number) {
         return await this.socialCardService.delete(id);
     }
 
@@ -57,5 +58,22 @@ export class SocialCardController {
     async update(@Body() socialCard: SocialCard) {
         return await this.socialCardService.update(socialCard);
     }
+
+    @Post('save_comment')
+    async saveComment(@Body() comment: Comment[]) {
+        return await this.socialCardService.saveComment(comment);
+    }
+
+    @Get('showcomment')
+    async showComment() {
+        return await this.socialCardService.showComment();
+    }
+
+    @Get('update-status/:id/:value')
+    async updateStatus(@Param('id', ParseIntPipe) id: number, @Param('value', ParseIntPipe) value: number) {
+        console.log(value)
+        return await this.socialCardService.updateStatus(id, value);
+    }
+
 
 }

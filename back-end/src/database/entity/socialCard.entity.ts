@@ -1,8 +1,7 @@
 import { IsNumber } from 'class-validator';
 import {
-   Column, Entity, PrimaryGeneratedColumn
-} from 'typeorm';
-
+   Column, Entity, PrimaryGeneratedColumn, OneToMany
+} from 'typeorm'; 
 @Entity('social-card')
 export class SocialCard {
    @Column({ name: 'id' })
@@ -22,4 +21,9 @@ export class SocialCard {
    @Column({ name: 'image', nullable: true })
    Image: string;
 
+   @Column({ name: 'heart' })
+   Heart: number;
+
+   @Column({name: 'is_enable', default: false})
+   IsEnable: Boolean
 }

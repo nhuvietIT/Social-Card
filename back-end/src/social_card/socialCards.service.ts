@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SocialCard } from '../database/entity/socialCard.entity';
+import { Comment } from 'src/database/entity/comment.entity';
 import {
     Connection,
     Equal,
@@ -14,6 +15,8 @@ export class SocialCardService {
     constructor(
         @InjectRepository(SocialCard)
         private readonly socialCardService: Repository<SocialCard>,
+        @InjectRepository(Comment)
+        private readonly CommentService: Repository<Comment>,
         private connection: Connection
     ) {
     }
@@ -52,5 +55,25 @@ export class SocialCardService {
         return await this.socialCardService.find()
     }
 
+    async saveComment(comment: Comment[]) {
+        try {
+            await this.CommentService.save(comment)
+            return await this.CommentService.find()
+        } catch (err) {
+            console.log({ err });
+        }
+    }
 
+    async showComment() {
+        try {
+            return await this.CommentService.find()
+        } catch (err) {
+            console.log({ err });
+        }
+    }
+
+    async updateStatus(id, value) { 
+        await this.socialCardService.update(id, { Heart: value });
+        return await this.socialCardService.find()
+    }
 }

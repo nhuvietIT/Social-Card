@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SocialCardModule } from './social_card/socialCards.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
+import { CommentsModule} from './commet/comments.module'
 import { join } from 'path';
 import { ConfigModule } from "@nestjs/config";
 @Module({
-    imports: [ 
+    imports: [
         TypeOrmModule.forRoot({
             type: 'mysql',
             host: 'localhost',
@@ -20,6 +20,7 @@ import { ConfigModule } from "@nestjs/config";
             ignoreEnvFile: false
         }),
         SocialCardModule,
+        // CommentsModule,
     ],
     controllers: [],
     providers: [],
