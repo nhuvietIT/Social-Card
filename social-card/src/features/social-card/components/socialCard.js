@@ -109,7 +109,9 @@ export function SocialCard() {
                               <div style={{ marginTop: 20 }} >
                                  <button className="btn btn-outline-danger btn-sm float-right"
                                     onClick={() => {
-                                       dispatch(deleteocalDetail(list.id))
+                                       if (window.confirm("Data can't revert! Do you want to continue?")) {
+                                          dispatch(deleteocalDetail(list.id))
+                                       }
                                     }}
                                  ><Icon iconName="fas fa-trash" /></button>
                                  <button className="btn btn-outline-danger btn-sm float-left"><Icon iconName="fas fa-heart" /></button>
@@ -148,6 +150,7 @@ export function SocialCard() {
                            placeholder="Description"
                            aria-label="Username"
                            value={Description}
+                           style={{ height: 100 }}
                            aria-describedby="basic-addon1"
                            onChange={e => setDescription(e.target.value)} />
                      </InputGroup>
