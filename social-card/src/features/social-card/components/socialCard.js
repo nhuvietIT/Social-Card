@@ -66,7 +66,6 @@ export function SocialCard() {
    const dataList = arrData.map(({ id, Name, Avatar, Description, Image }) =>
       ({ id: id, Name: Name, Avatar: Avatar, Description: Description, Image: Image }))
    dataList.sort((a, b) => { return b.id - a.id });
-   console.log(dataList)
 
    return (
       <div>
@@ -99,6 +98,8 @@ export function SocialCard() {
                                  setCheckshow(true)
                                  setIdUpdate(list.id)
                                  handleShow()
+                                 setName(list.Name)
+                                 setDescription(list.Description)
                               }}
                               ><Icon iconName="fas fa-pencil-alt" /></button>
                            </div>
@@ -137,6 +138,7 @@ export function SocialCard() {
                         <FormControl
                            placeholder="Name"
                            aria-label="Username"
+                           value={Name}
                            aria-describedby="basic-addon1"
                            onChange={e => setName(e.target.value)} />
                      </InputGroup>
@@ -145,6 +147,7 @@ export function SocialCard() {
                         <FormControl
                            placeholder="Description"
                            aria-label="Username"
+                           value={Description}
                            aria-describedby="basic-addon1"
                            onChange={e => setDescription(e.target.value)} />
                      </InputGroup>
