@@ -26,7 +26,7 @@ export function Comment(props) {
       if (comment !== "") {
          const data = { socialCardId: props.idSocial, Content: comment }
          await dispatch(addComment(data))
-         setComent('')
+
       }
    }
 
@@ -34,16 +34,29 @@ export function Comment(props) {
    dataList.sort((a, b) => { return b.id - a.id });
    const dataComentList = dataList.filter(f => f.socialCardId === props.idSocial)
 
-
    return (
       <div>
          {commentldData.status === 'loading' ?
-            <div >Loading ...</div>
-            :
-            <div> 
+            <div>
                <Collapse in={props.open ? true : open} key={props.idSocial}>
                   <div id={props.idopen}>
                      <div >
+                        <InputGroup>
+                           <FormControl
+                              placeholder="Comment..."
+                              aria-label="Username"
+                              aria-describedby="basic-addon1"
+                              className="float-left"
+                              onBlur={(e) => { setComent(e.target.value) }}
+                              defaultValue={''}
+                           />
+                           <button className="btn btn-outline-primary btn-sm float-left"
+                              onClick={() => {
+                                 AddComment()
+                                 setOpen(open)
+                              }}>
+                              <Icon iconName="fas fa-chevron-circle-right" /></button>
+                        </InputGroup>
                         {dataComentList.map((list) => (
                            <FormControl key={list.id}
                               placeholder="Comment..."
@@ -56,15 +69,37 @@ export function Comment(props) {
                            />
                         ))
                         }
+                     </div>
+                  </div>
+               </Collapse>
+
+            </div>
+            :
+            <div>
+               <Collapse in={props.open ? true : open} key={props.idSocial}>
+                  <div id={props.idopen}>
+                     <div >
                         <InputGroup>
-                           <FormControl
-                              placeholder="Comment..."
-                              aria-label="Username"
-                              aria-describedby="basic-addon1"
-                              className="float-left"
-                              onBlur={(e) => { setComent(e.target.value) }}
-                              defaultValue={""}
-                           />
+                           {commentldData.status === 'loading' ? <>
+                              <FormControl
+                                 placeholder="Comment..."
+                                 aria-label="Username"
+                                 aria-describedby="basic-addon1"
+                                 className="float-left"
+                                 onBlur={(e) => { setComent(e.target.value) }}
+                                 defaultValue={''}
+                              />
+                           </> : <>
+                              <FormControl
+                                 placeholder="Comment..."
+                                 aria-label="Username"
+                                 aria-describedby="basic-addon1"
+                                 className="float-left"
+                                 onBlur={(e) => { setComent(e.target.value) }}
+                                 defaultValue={''}
+                              />
+                           </>}
+
                            <button className="btn btn-outline-primary btn-sm float-left"
                               onClick={() => {
                                  AddComment()
@@ -72,6 +107,19 @@ export function Comment(props) {
                               }}>
                               <Icon iconName="fas fa-chevron-circle-right" /></button>
                         </InputGroup>
+                        {dataComentList.map((list) => (
+                           <FormControl key={list.id}
+                              placeholder="Comment..."
+                              aria-label="Username"
+                              value={list.Content}
+                              aria-describedby="basic-addon1"
+                              className="float-left"
+                              readOnly
+                              style={{ backgroundColor: "#ffffff", marginBottom: 2 }}
+                           />
+                        ))
+                        }
+
 
                      </div>
 

@@ -7,6 +7,7 @@ import {
     Equal,
     MoreThan,
     Repository,
+    getConnection
 } from 'typeorm';
 
 
@@ -44,14 +45,23 @@ export class SocialCardService {
     }
 
     async update(socialCard: SocialCard) {
-        await this.socialCardService.update(socialCard.id,
-            {
-                id: socialCard.id,
-                Name: socialCard.Name,
-                Description: socialCard.Description,
-                Avatar: socialCard.Avatar,
-                Image: socialCard.Image
-            });
+        if (socialCard.Avatar !== undefined || socialCard.Image !== undefined) {
+            await this.socialCardService.update(socialCard.id,
+                {
+                    id: socialCard.id,
+                    Name: socialCard.Name,
+                    Description: socialCard.Description,
+                    Avatar: socialCard.Avatar,
+                    Image: socialCard.Image
+                });
+        } else {
+            await this.socialCardService.update(socialCard.id,
+                {
+                    id: socialCard.id,
+                    Name: socialCard.Name,
+                    Description: socialCard.Description,
+                });
+        }
         return await this.socialCardService.find()
     }
 
@@ -72,7 +82,7 @@ export class SocialCardService {
         }
     }
 
-    async updateStatus(id, value) { 
+    async updateStatus(id, value) {
         await this.socialCardService.update(id, { Heart: value });
         return await this.socialCardService.find()
     }

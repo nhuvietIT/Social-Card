@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-   fetchSocalDetail, selectSocial, addSocalDetail, deleteocalDetail, updateSocalDetail, 
+   fetchSocalDetail, selectSocial, addSocalDetail, deleteocalDetail, updateSocalDetail,
 } from "./socialCardSlice";
 import { selectCommnet } from "../components/comment/commentSlice"
 
@@ -10,7 +10,7 @@ import Card from 'react-bootstrap/Card'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Icon from "react-multiple-icons";
 import { Comment } from './comment/comment'
-import { Heart } from './heart';
+import { Heart } from '../components/heart/heart';
 
 export function SocialCard() {
    const socialdData = useSelector(selectSocial);
@@ -57,6 +57,7 @@ export function SocialCard() {
       formData.append("file", file, file.name)
       setSaveUploadFile(formData)
    }
+
 
    const updateSocial = async () => {
       const data = {
@@ -125,19 +126,8 @@ export function SocialCard() {
                                        }
                                     }}
                                  ><Icon iconName="fas fa-trash" /></button>
-                                 {/* <button
-                                    style={{ border: "none" }}
-                                    className="btn btn-outline-danger btn-sm float-left"
-                                    onClick={() => {
-                                       const data = { id: list.id, Heart: list.Heart + 1 }
-                                       dispatch(updateStatus(data))
 
-                                    }}
-
-                                 ><Icon iconName="fas fa-heart" /></button>
-                                 <span className="btn-sm float-left" style={{ color: "red", fontWeight: "bold" }} >{list.Heart}</span> */}
-
-                                 <Heart list={list} />
+                                 <Heart list={list} i={i} />
 
                                  <button className="btn btn-outline-primary btn-sm float-left"
                                     style={{ border: "none", marginLeft: 9 }}

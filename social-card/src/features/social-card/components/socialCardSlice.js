@@ -50,33 +50,37 @@ export const deleteocalDetail = createAsyncThunk(
 export const updateSocalDetail = createAsyncThunk(
   'social/updateSocalDetail',
   async (value) => {
-    const infor = await SocialCardsApi.uploadFile(value.Upload)
-    const data = {
-      id: value.id,
-      Name: value.Name,
-      Description: value.Description,
-      Avatar: infor.file.filename,
-      Image: infor.file.path,
-      // Heart: value.Heart
+    if (value.Upload !== "") {
+      const infor = await SocialCardsApi.uploadFile(value.Upload)
+      const data = {
+        id: value.id,
+        Name: value.Name,
+        Description: value.Description,
+        Avatar: infor.file.filename,
+        Image: infor.file.path
+      }
+      const dataApi = await SocialCardsApi.update(data);
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ data: dataApi }), 500)
+      );
+      return response.data;
+      
+    } else {
+      const data = {
+        id: value.id,
+        Name: value.Name,
+        Description: value.Description
+      }
+      const dataApi = await SocialCardsApi.update(data);
+      const response = await new Promise((resolve) =>
+        setTimeout(() => resolve({ data: dataApi }), 500)
+      );
+      return response.data;
     }
-    const dataApi = await SocialCardsApi.update(data);
-    const response = await new Promise((resolve) =>
-      setTimeout(() => resolve({ data: dataApi }), 500)
-    );
-    return response.data;
   }
 );
 
-export const updateStatus = createAsyncThunk(
-  'social/updateStatus',
-  async (value) => {
-    const dataApi = await SocialCardsApi.updateStatus(value.id, value.Heart);
-    const response = await new Promise((resolve) =>
-      setTimeout(() => resolve({ data: dataApi }), 500)
-    );
-    return response.data;
-  }
-);
+
 
 export const socialSlice = createSlice({
   name: 'social',
@@ -110,13 +114,6 @@ export const socialSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(updateSocalDetail.fulfilled, (state, action) => {
-        state.status = 'idle';
-        state.social = action.payload;
-      })
-      .addCase(updateStatus.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(updateStatus.fulfilled, (state, action) => {
         state.status = 'idle';
         state.social = action.payload;
       })
