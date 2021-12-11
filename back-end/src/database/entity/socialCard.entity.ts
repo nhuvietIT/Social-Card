@@ -1,7 +1,7 @@
 import { IsNumber } from 'class-validator';
 import {
-   Column, Entity, PrimaryGeneratedColumn, OneToMany
-} from 'typeorm'; 
+   Column, Entity, PrimaryGeneratedColumn, OneToMany, DeleteDateColumn
+} from 'typeorm';
 @Entity('social-card')
 export class SocialCard {
    @Column({ name: 'id' })
@@ -24,6 +24,9 @@ export class SocialCard {
    @Column({ name: 'heart' })
    Heart: number;
 
-   @Column({name: 'is_enable', default: false})
+   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+   DeletedAt?: Date;
+
+   @Column({ name: 'is_enable', default: false })
    IsEnable: Boolean
 }

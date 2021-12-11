@@ -40,12 +40,14 @@ export class SocialCardService {
     }
 
     async delete(id: number) {
-        await this.socialCardService.delete(id)
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        await this.socialCardService.update(id, { DeletedAt: today.toISOString() });
         return await this.socialCardService.find()
     }
 
     async update(socialCard: SocialCard) {
-        if (socialCard.Avatar !== undefined || socialCard.Image !== undefined) {
+        if (socialCard.Avatar !== undefined && socialCard.Image !== undefined) {
             await this.socialCardService.update(socialCard.id,
                 {
                     id: socialCard.id,
@@ -54,15 +56,34 @@ export class SocialCardService {
                     Avatar: socialCard.Avatar,
                     Image: socialCard.Image
                 });
-        } else {
+            return await this.socialCardService.find()
+        } else if (socialCard.Avatar === undefined && socialCard.Image !== undefined) {
             await this.socialCardService.update(socialCard.id,
                 {
                     id: socialCard.id,
                     Name: socialCard.Name,
                     Description: socialCard.Description,
+                    Image: socialCard.Image
                 });
+            return await this.socialCardService.find()
+        } else if (socialCard.Avatar !== undefined && socialCard.Image === undefined) {
+            await this.socialCardService.update(socialCard.id,
+                {
+                    id: socialCard.id,
+                    Name: socialCard.Name,
+                    Description: socialCard.Description,
+                    Avatar: socialCard.Avatar
+                });
+            return await this.socialCardService.find()
+        } else {
+            await this.socialCardService.update(socialCard.id,
+                {
+                    id: socialCard.id,
+                    Name: socialCard.Name,
+                    Description: socialCard.Description
+                });
+            return await this.socialCardService.find()
         }
-        return await this.socialCardService.find()
     }
 
     async saveComment(comment: Comment[]) {
@@ -84,6 +105,17 @@ export class SocialCardService {
 
     async updateStatus(id, value) {
         await this.socialCardService.update(id, { Heart: value });
+        return await this.socialCardService.find()
+    }
+
+    async deleteUndo(id: number) {
+        const timeElapsed = Date.now();
+        const today = new Date(timeElapsed);
+        return await this.socialCardService.update(id, { DeletedAt: today.toISOString() });
+    }
+
+    async revertUndo(id: number) {
+        await this.socialCardService.update(id, { DeletedAt: null });
         return await this.socialCardService.find()
     }
 }

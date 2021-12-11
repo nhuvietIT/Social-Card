@@ -20,13 +20,13 @@ export const fetchSocalDetail = createAsyncThunk(
 export const addSocalDetail = createAsyncThunk(
   'social/addSocalDetail',
   async (value) => {
-    const infor = await SocialCardsApi.uploadFile(value.Upload)
+    const inforAvatar = await SocialCardsApi.uploadFile(value.Upload)
+    const inforImg = await SocialCardsApi.uploadFileIMG(value.Image)
     const data = {
       Name: value.Name,
       Description: value.Description,
-      Avatar: infor.file.filename,
-      Image: infor.file.path,
-      // Heart: infor.Heart
+      Avatar: inforAvatar.file.filename,
+      Image: inforImg.file.filename,
     }
     const dataApi = await SocialCardsApi.saveAll(data);
     const response = await new Promise((resolve) =>
@@ -50,37 +50,73 @@ export const deleteocalDetail = createAsyncThunk(
 export const updateSocalDetail = createAsyncThunk(
   'social/updateSocalDetail',
   async (value) => {
-    if (value.Upload !== "") {
+
+    if (value.Upload !== "" && value.Image !== "") {
       const infor = await SocialCardsApi.uploadFile(value.Upload)
+      const inforImg = await SocialCardsApi.uploadFileIMG(value.Image)
       const data = {
         id: value.id,
         Name: value.Name,
         Description: value.Description,
         Avatar: infor.file.filename,
-        Image: infor.file.path
+        Image: inforImg.file.filename
       }
       const dataApi = await SocialCardsApi.update(data);
       const response = await new Promise((resolve) =>
         setTimeout(() => resolve({ data: dataApi }), 500)
       );
       return response.data;
-      
-    } else {
-      const data = {
+    } else if (value.Upload !== "" && value.Image === "") {
+      const infor1 = await SocialCardsApi.uploadFile(value.Upload)
+      const data1 = {
         id: value.id,
         Name: value.Name,
-        Description: value.Description
+        Description: value.Description,
+        Avatar: infor1.file.filename,
       }
-      const dataApi = await SocialCardsApi.update(data);
-      const response = await new Promise((resolve) =>
-        setTimeout(() => resolve({ data: dataApi }), 500)
+      const dataApi1 = await SocialCardsApi.update(data1);
+      const response1 = await new Promise((resolve) =>
+        setTimeout(() => resolve({ data: dataApi1 }), 500)
       );
-      return response.data;
+      return response1.data;
+    } else if (value.Upload === "" && value.Image !== "") {
+      const inforImg2 = await SocialCardsApi.uploadFileIMG(value.Image)
+      const data2 = {
+        id: value.id,
+        Name: value.Name,
+        Description: value.Description,
+        Image: inforImg2.file.filename
+      }
+      const dataApi2 = await SocialCardsApi.update(data2);
+      const response2 = await new Promise((resolve) =>
+        setTimeout(() => resolve({ data: dataApi2 }), 500)
+      );
+      return response2.data;
+    } else {
+      const data3 = {
+        id: value.id,
+        Name: value.Name,
+        Description: value.Description,
+      }
+      const dataApi3 = await SocialCardsApi.update(data3);
+      const response3 = await new Promise((resolve) =>
+        setTimeout(() => resolve({ data: dataApi3 }), 500)
+      );
+      return response3.data;
     }
   }
+)
+
+export const revertUndo = createAsyncThunk(
+  'social/revertUndo',
+  async (id) => {
+    const dataApi = await SocialCardsApi.revertUndo(id);
+    const response = await new Promise((resolve) =>
+      setTimeout(() => resolve({ data: dataApi }), 500)
+    );
+    return response.data;
+  }
 );
-
-
 
 export const socialSlice = createSlice({
   name: 'social',
@@ -117,7 +153,14 @@ export const socialSlice = createSlice({
         state.status = 'idle';
         state.social = action.payload;
       })
-
+      .addCase(revertUndo.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(revertUndo.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.social = action.payload;
+      })
+      
   }
 });
 

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchHeart, updateStatus, selectHeart } from './heartSlice'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Icon from "react-multiple-icons";
-
 export function Heart(props) {
    const heartData = useSelector(selectHeart);
    const dispatch = useDispatch()
@@ -54,6 +53,7 @@ export function Heart(props) {
                               dispatch(updateStatus(data))
                            }}
                         ><Icon iconName="fas fa-heart" /></button>
+
                         <span className="btn-sm float-left" style={{ color: "red", fontWeight: "bold" }} >
                            {list.Heart}
                         </span>

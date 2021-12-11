@@ -49,6 +49,31 @@ export class SocialCardController {
         };
     }
 
+    @Post('upload_avatar')
+    @UseInterceptors(FileInterceptor('file',))
+    @UseInterceptors(FileInterceptor('file',
+        {
+            storage: diskStorage({
+                destination: (req, file, cb) => {
+                    // const uploadPath = 'uploads/'
+                    const uploadPath = process.env.LINK_UPLOAD
+                    const path = uploadPath + req.body.file
+                    mkdirSync(path, { recursive: true })
+                    cb(null, path);
+                },
+                filename: async (req, file, cb) => {
+                    cb(null, file.originalname)
+                }
+            })
+        }
+    ))
+    async uploadFileAvater(@UploadedFile() file: Express.Multer.File) {
+
+        return {
+            file: file
+        };
+    }
+
     @Delete('delete/:id')
     async delete(@Param('id', ParseIntPipe) id: number) {
         return await this.socialCardService.delete(id);
@@ -71,9 +96,16 @@ export class SocialCardController {
 
     @Get('update-status/:id/:value')
     async updateStatus(@Param('id', ParseIntPipe) id: number, @Param('value', ParseIntPipe) value: number) {
-        console.log(value)
         return await this.socialCardService.updateStatus(id, value);
     }
 
+    @Delete('deleteundo/:id')
+    async deleteUndo(@Param('id', ParseIntPipe) id: number) {
+        return await this.socialCardService.deleteUndo(id);
+    }
+    @Get('revertundo/:id')
+    async revertUndo(@Param('id', ParseIntPipe) id: number) {
+        return await this.socialCardService.revertUndo(id);
+    }
 
 }
